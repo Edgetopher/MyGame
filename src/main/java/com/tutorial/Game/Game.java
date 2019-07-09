@@ -4,15 +4,21 @@ import java.awt.*;
 import java.awt.image.BufferStrategy;
 
 public class Game extends Canvas implements Runnable {
-    private static final int WIDTH = 1080, HEIGHT = WIDTH / 12 * 9;
+    public static final int WIDTH = 1080, HEIGHT = WIDTH / 12 * 9;
     private Thread thread;
     private boolean running = false;
     private  Handler handler;
+    private HUD hud;
 
     public Game(){
         new Window(WIDTH, HEIGHT,"Lets play games", this);
         handler = new Handler();
+        hud = new HUD();
+
+        this.addKeyListener(new KeyInput(handler));
         handler.addObject(new Player(100, 100,ID.Player));
+        handler.addObject(new BasicEnemy(600,600, ID.BasicEnemy));
+//        handler.addObject(new Player(250, 200,ID.Player2));
     }
 
     public synchronized void start(){
@@ -59,7 +65,18 @@ public class Game extends Canvas implements Runnable {
 
     private void tick(){
         handler.tick();
+        hud.tick();
 
+    }
+
+    public static int clamp(int var, int min, int max){
+        if (var >= max){
+            return var = max;
+        }else if (var <= min){
+            return var =min;
+        } else {
+            return var;
+        }
     }
     private void render(){
         BufferStrategy bs = this.getBufferStrategy();
@@ -73,8 +90,10 @@ public class Game extends Canvas implements Runnable {
         g.setColor(Color.black);
         g.fillRect(0,0, WIDTH, HEIGHT);
 
+
         handler.render(g);
 
+        hud.render(g);
         g.dispose();
         bs.show();
 
