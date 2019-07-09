@@ -4,5 +4,6 @@ public enum ID {
 
     Player(),
     BasicEnemy(),
-    Player2()
+    Player2(),
+    HealthPack()
 }
